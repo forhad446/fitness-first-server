@@ -5,7 +5,7 @@ const app = express()
 const port = process.env.PORT || 5000;
 
 // middleware
-app.use(express())
+app.use(express.json())
 app.use(cors())
 
 const uri = "mongodb+srv://forhad445:hCYCLsss09eq1Cud@cluster0.ajryzz7.mongodb.net/?retryWrites=true&w=majority";
@@ -25,10 +25,20 @@ async function run() {
         // await client.connect();
 
         const usersCollection = client.db("usersDB").collection("users");
+        const trainersCollection = client.db("trainersDB").collection("trainers");
 
+        // new users who created account on my website
         app.post('/users', async (req, res) => {
             const user = req.body;
-            console.log(user);
+            const result = await usersCollection.insertOne(user);
+            res.send(result)
+        })
+
+        // for trainers request
+        app.post('/trainers', async (req, res) => {
+            const data = req.body;
+            const result = await trainersCollection.insertOne(data);
+            res.send(result) 
         })
 
 
