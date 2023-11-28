@@ -25,6 +25,7 @@ async function run() {
         // await client.connect();
 
         const usersCollection = client.db("usersDB").collection("users");
+        const postsCollection = client.db("usersDB").collection("posts");
         const trainersCollection = client.db("trainersDB").collection("trainers");
 
         // new users who created account on my website
@@ -38,6 +39,16 @@ async function run() {
         app.post('/trainers', async (req, res) => {
             const data = req.body;
             const result = await trainersCollection.insertOne(data);
+            res.send(result) 
+        })
+        // get all post
+        app.get('/posts', async (req, res) => {
+            const result = await postsCollection.find().toArray();
+            res.send(result) 
+        })
+        // get all trainer
+        app.get('/trainers', async (req, res) => {
+            const result = await trainersCollection.find().toArray();
             res.send(result) 
         })
 
