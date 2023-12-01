@@ -56,6 +56,22 @@ async function run() {
             const result = await trainersCollection.find().toArray();
             res.send(result)
         })
+        // put user by id
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const data = req.body; 
+
+            const options = { upsert: true };
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    name: data.fullName,
+                    password: data.password
+                },
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result) 
+        })
         // put user by email
         app.put('/users/:email', async (req, res) => {
             const email = req.params.email;
