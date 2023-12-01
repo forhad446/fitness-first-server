@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
 
@@ -44,16 +44,45 @@ async function run() {
         app.post('/trainers', async (req, res) => {
             const data = req.body;
             const result = await trainersCollection.insertOne(data);
-            res.send(result) 
+            res.send(result)
         })
         // get all post
         app.get('/posts', async (req, res) => {
             const result = await postsCollection.find().toArray();
-            res.send(result) 
+            res.send(result)
         })
         // get all trainer
         app.get('/trainers', async (req, res) => {
             const result = await trainersCollection.find().toArray();
+            res.send(result)
+        })
+        // put user by email
+        app.put('/users/:email', async (req, res) => {
+            const email = req.params.email;
+
+            const options = { upsert: true };
+            const filter = { email: email };
+            const updateDoc = {
+                $set: {
+                    role: 'Trainer'
+                },
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result) 
+        })
+        // put trainer by id
+        app.put('/trainers/:id', async (req, res) => {
+            const id = req.params.id;
+            const data = req.body;
+
+            const options = { upsert: true };
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    status: 'success'
+                },
+            };
+            const result = await trainersCollection.updateOne(filter, updateDoc, options);
             res.send(result) 
         })
 
